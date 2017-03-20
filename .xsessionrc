@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Load resources
+
+# xrdb -merge .Xresources
+
+emacs --daemon &
+stalonetray &
+xscreensaver -no-splash &
+setxkbmap us &
+setxkbmap -option ctrl:nocaps &
+# feh --bg-scale /path/to/bg.png
+
+exec xmonad

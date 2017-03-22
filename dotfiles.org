@@ -1,0 +1,687 @@
+* WM config
+Xmonad config.
+#+BEGIN_SRC 
+-- Tim Put
+-- based on Vic Frzyel's XMonad config: http://github.com/vicfryzel/xmonad-config
+
+import System.IO
+import System.Exit
+import XMonad
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers
+import XMonad.Hooks.SetWMName
+import XMonad.Layout.Fullscreen
+import XMonad.Layout.NoBorders
+import XMonad.Layout.Spiral
+import XMonad.Layout.Tabbed
+import XMonad.Layout.ThreeColumns
+import XMonad.Layout.ResizableTile
+import XMonad.Util.Run(spawnPipe)
+import XMonad.Util.EZConfig(additionalKeys)
+import Graphics.X11.ExtraTypes.XF86
+import qualified XMonad.StackSet as W
+import qualified Data.Map        as M
+
+
+------------------------------------------------------------------------
+-- Terminal
+-- The preferred terminal program, which is used in a binding below and by
+-- certain contrib modules.
+--
+myTerminal = "/usr/bin/konsole"
+
+-- The command to lock the screen or show the screensaver.
+myScreensaver = "/usr/bin/xscreensaver-command -lock"
+
+-- The command to take a selective screenshot, where you select
+-- what you'd like to capture on the screen.
+-- mySelectScreenshot = "select-screenshot"
+
+-- The command to use as a launcher, to launch commands that don't have
+-- preset keybindings.
+myLauncher = "$(/usr/bin/yeganesh -x -- -fn '-*-terminus-*-r-normal-*-*-120-*-*-*-*-iso8859-*' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC')"
+
+
+------------------------------------------------------------------------
+-- Workspaces
+-- The default number of workspaces (virtual screens) and their names.
+--
+myWorkspaces = ["1:terminal","2:chromium","3:emacs","4:study","5:reading","6:org-mode","7:factorio"] ++ map show [8..9]
+
+
+------------------------------------------------------------------------
+-- Window rules
+-- Execute arbitrary actions and WindowSet manipulations when managing
+-- a new window. You can use this to, for example, always float a
+-- particular program, or have a client always appear on a particular
+-- workspace.
+--
+-- To find the property name associated with a program, use
+-- > xprop | grep WM_CLASS
+-- and click on the client you're interested in.
+--
+-- To match on the WM_NAME, you can use 'title' in the same way that
+-- 'className' and 'resource' are used below.
+--
+myManageHook = composeAll
+    [ className =? "Chromium"       --> doShift "2:web"
+    , className =? "Google-chrome"  --> doShift "2:web"
+    , resource  =? "desktop_window" --> doIgnore
+    , className =? "Galculator"     --> doFloat
+    , className =? "Steam"          --> doFloat
+    , className =? "Darktable"      --> doFloat
+    , resource  =? "gpicview"       --> doFloat
+    , className =? "VLC"            --> doFloat
+    , className =? "stalonetray"    --> doIgnore
+    , isFullscreen                  --> doFullFloat --doF W.focusDown <+> doFullFloat)
+    ]
+
+
+------------------------------------------------------------------------
+-- Layouts
+-- You can specify and transform your layouts by modifying these values.
+-- If you change layout bindings be sure to use 'mod-shift-space' after
+-- restarting (with 'mod-q') to reset your layout state to the new
+-- defaults, as xmonad preserves your old layout settings by default.
+--
+-- The available layouts.  Note that each layout is separated by |||,
+-- which denotes layout choice.
+--
+myLayout =
+    noBorders (fullscreenFull Full) |||
+    avoidStruts (
+    ResizableTall 1 (3/100) (1/2) [] |||
+    Tall 1 (3/100) (1/2) |||
+    Full |||
+    ThreeCol 1 (3/100) (1/2) |||
+    Mirror (Tall 1 (3/100) (1/2)) |||
+    tabbed shrinkText tabConfig |||
+    spiral (6/7))
+
+
+
+------------------------------------------------------------------------
+-- Colors and borders, 
+myNormalBorderColor  = "#28abb2"--tealish --"#7c7c7c" --grey 
+myFocusedBorderColor = "#b5485d"--teal  --"#ffb6b0" --rose
+
+-- Colors for text and backgrounds of each tab when in "Tabbed" layout.
+tabConfig = defaultTheme {
+    activeBorderColor = "#7C7C7C",
+    activeTextColor = "#CEFFAC",
+    activeColor = "#000000",
+    inactiveBorderColor = "#7C7C7C",
+    inactiveTextColor = "#EEEEEE",
+    inactiveColor = "#000000"
+}
+
+-- Color of current window title in xmobar.
+xmobarTitleColor = "#FFB6B0"
+
+-- Color of current workspace in xmobar.
+xmobarCurrentWorkspaceColor = "#CEFFAC"
+
+-- Width of the window border in pixels.
+myBorderWidth = 4
+
+
+------------------------------------------------------------------------
+-- Key bindings
+--
+-- modMask lets you specify which modkey you want to use. The default
+-- is mod1Mask ("left alt").  You may also consider using mod3Mask
+-- ("right alt"), which does not conflict with emacs keybindings. The
+-- "windows key" is usually mod4Mask.
+--
+myModMask = mod4Mask
+
+myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
+  ----------------------------------------------------------------------
+  -- Custom key bindings
+  --
+
+  -- Start a terminal.  Terminal to start is specified by myTerminal variable.
+  [ ((modMask .|. shiftMask, xK_Return),
+     spawn $ XMonad.terminal conf)
+
+  -- Lock the screen using command specified by myScreensaver.
+  , ((modMask .|. controlMask, xK_l),
+     spawn myScreensaver)
+
+  -- Spawn the launcher using command specified by myLauncher.
+  -- Use this to launch programs without a key binding.
+  , ((modMask, xK_p),
+     spawn myLauncher)
+
+  -- Take a selective screenshot using the command specified by mySelectScreenshot.
+--  , ((modMask .|. shiftMask, xK_p),
+--     spawn mySelectScreenshot)
+
+--  -- Take a full screenshot using the command specified by myScreenshot.
+-- , ((modMask .|. controlMask .|. shiftMask, xK_p),
+--     spawn myScreenshot)
+
+  -- Mute volume with media key.
+  , ((0, xF86XK_AudioMute),
+     spawn "amixer -q set Master toggle")
+
+  -- Decrease volume with media key.
+  , ((0, xF86XK_AudioLowerVolume),
+     spawn "amixer -q set Master 2%-")
+
+  -- Increase volume with media key.
+  , ((0, xF86XK_AudioRaiseVolume),
+     spawn "amixer -q set Master 2%+")
+
+  -- Mute volume.
+  , ((modMask, xK_F10),
+     spawn "amixer -q set Master toggle")
+
+  -- Decrease volume.
+  , ((modMask, xK_F11),
+     spawn "amixer -q set Master 2%-")
+
+  -- Increase volume.
+  , ((modMask, xK_F12),
+     spawn "amixer -q set Master 2%+")
+
+  -- Adjust backlight with mod + F5/F6, I'm using light-git on Arch from the AUR.
+  , ((modMask, xK_F5), spawn "light -U 10")
+  , ((modMask, xK_F6), spawn "light -A 10")
+
+  -- Launch emacsclient with C-e, run "emacs --daemon" on startup or add "(start server)" to your init.el 
+  , ((modMask, xK_e), spawn "emacsclient -c -a emacs")
+
+  
+  -- Adjust height of window with mod + a/z, complements the default mod + h/l behaviour. 
+  , ((modMask, xK_a), sendMessage MirrorShrink)
+  , ((modMask, xK_z), sendMessage MirrorExpand)
+  --------------------------------------------------------------------
+  -- "Standard" xmonad key bindings
+  --
+
+  -- Close focused window.
+  , ((modMask .|. shiftMask, xK_c),
+     kill)
+
+  -- Cycle through the available layout algorithms.
+  , ((modMask, xK_space),
+     sendMessage NextLayout)
+    
+  --  Reset the layouts on the current workspace to default.
+  , ((modMask .|. shiftMask, xK_space),
+     setLayout $ XMonad.layoutHook conf)
+
+  -- Resize viewed windows to the correct size.
+  , ((modMask, xK_n),
+     refresh)
+
+  -- Move focus to the next window.
+  , ((modMask, xK_Tab),
+     windows W.focusDown)
+
+  -- Move focus to the previous window.
+  , ((modMask .|. shiftMask, xK_Tab),
+     windows W.focusUp)
+
+  -- Move focus to the next window.
+  , ((modMask, xK_j),
+     windows W.focusDown)
+
+  -- Move focus to the previous window.
+  , ((modMask, xK_k),
+     windows W.focusUp  )
+
+  -- Move focus to the master window.
+  , ((modMask, xK_m),
+     windows W.focusMaster  )
+
+  -- Swap the focused window and the master window.
+  , ((modMask, xK_Return),
+     windows W.swapMaster)
+
+  -- Swap the focused window with the next window.
+  , ((modMask .|. shiftMask, xK_j),
+     windows W.swapDown  )
+
+  -- Swap the focused window with the previous window.
+  , ((modMask .|. shiftMask, xK_k),
+     windows W.swapUp    )
+
+  -- Shrink the master area.
+  , ((modMask, xK_h),
+     sendMessage Shrink)
+
+  -- Expand the master area.
+  , ((modMask, xK_l),
+     sendMessage Expand)
+
+  -- Push window back into tiling.
+  , ((modMask, xK_t),
+     withFocused $ windows . W.sink)
+
+  -- Increment the number of windows in the master area.
+  , ((modMask, xK_comma),
+     sendMessage (IncMasterN 1))
+
+  -- Decrement the number of windows in the master area.
+  , ((modMask, xK_period),
+     sendMessage (IncMasterN (-1)))
+
+  -- Quit xmonad.
+  , ((modMask .|. shiftMask, xK_q),
+     io (exitWith ExitSuccess))
+
+  -- Restart xmonad.
+  , ((modMask, xK_q),
+     restart "xmonad" True)
+  ]
+  ++
+
+  -- mod-[1..9], Switch to workspace N
+  -- mod-shift-[1..9], Move client to workspace N
+  [((m .|. modMask, k), windows $ f i)
+      | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
+      , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
+
+
+------------------------------------------------------------------------
+-- Mouse bindings
+--
+-- Focus rules
+-- True if your focus should follow your mouse cursor.
+myFocusFollowsMouse :: Bool
+myFocusFollowsMouse = False
+myClickJustFocuses :: Bool
+myClickJustFocuses = False
+
+myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
+  [
+    -- mod-button1, Set the window to floating mode and move by dragging
+    ((modMask, button1),
+     (\w -> focus w >> mouseMoveWindow w))
+
+    -- mod-button2, Raise the window to the top of the stack
+    , ((modMask, button2),
+       (\w -> focus w >> windows W.swapMaster))
+
+    -- mod-button3, Set the window to floating mode and resize by dragging
+    , ((modMask, button3),
+       (\w -> focus w >> mouseResizeWindow w))
+
+    -- you may also bind events to the mouse scroll wheel (button4 and button5)
+  ]
+
+------------------------------------------------------------------------
+-- Startup hook
+-- Perform an arbitrary action each time xmonad starts or is restarted
+-- with mod-q.  Used by, e.g., XMonad.Layout.PerWorkspace to initialize
+-- per-workspace layout choices.
+--
+-- By default, do nothing.
+myStartupHook = return ()
+
+
+------------------------------------------------------------------------
+-- Run xmonad with all the defaults we set up.
+--
+main = do
+  xmproc <- spawnPipe "xmobar ~/.xmonad/xmobar.hs"
+  xmonad $ defaults {
+      logHook = dynamicLogWithPP $ xmobarPP {
+            ppOutput = hPutStrLn xmproc
+          , ppTitle = xmobarColor xmobarTitleColor "" . shorten 100
+          , ppCurrent = xmobarColor xmobarCurrentWorkspaceColor ""
+          , ppSep = "   "
+      }
+      , manageHook = manageDocks <+> myManageHook
+      , startupHook = setWMName "Xmonad"
+  }
+
+
+------------------------------------------------------------------------
+-- Combine it all together
+-- A structure containing your configuration settings, overriding
+-- fields in the default config. Any you don't override, will
+-- use the defaults defined in xmonad/XMonad/Config.hs
+--
+-- No need to modify this.
+--
+defaults = defaultConfig {
+    -- simple stuff
+    terminal           = myTerminal,
+    focusFollowsMouse  = myFocusFollowsMouse,
+    clickJustFocuses   = myFocusFollowsMouse,
+    borderWidth        = myBorderWidth,
+    modMask            = myModMask,
+    workspaces         = myWorkspaces,
+    normalBorderColor  = myNormalBorderColor,
+    focusedBorderColor = myFocusedBorderColor,
+
+    -- key bindings
+    keys               = myKeys,
+    mouseBindings      = myMouseBindings,
+
+    -- hooks, layouts
+    layoutHook         = smartBorders $ myLayout,
+    manageHook         = myManageHook,
+    startupHook        = myStartupHook,
+    handleEventHook    = mconcat
+                       [ docksEventHook
+                       , handleEventHook defaultConfig ]
+}
+
+#+END_SRC
+Xmobar config.
+#+BEGIN_SRC 
+-- xmobar config used by Vic Fryzel
+-- Author: Vic Fryzel
+-- http://github.com/vicfryzel/xmonad-config
+
+-- This is setup for a 1920x1080 monitor
+Config {
+    font = "xft:Fixed-8",
+    bgColor = "#000000",
+    fgColor = "#ffffff",
+    position = Static { xpos = 0, ypos = 0, width = 3840, height = 24 },
+    lowerOnStart = False,
+    commands = [
+        Run Weather "CYEG" ["-t","<tempC>C <skyCondition>","-L","64","-H","77","-n","#CEFFAC","-h","#FFB6B0","-l","#96CBFE"] 36000,
+        Run MultiCpu ["-t","Cpu: <autototal>  Total: <total>% ",
+                      "-L","30","-H","60","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC","-w","3"] 10,
+        Run Memory ["-t","Mem: <usedratio>%","-H","8192","-L","4096","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10,
+        Run Swap ["-t","Swap: <usedratio>%","-H","1024","-L","512","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10,
+        --Run Network "em1" ["-t","Net: <rx>, <tx>","-H","200","-L","10","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10,
+        Run Date "%a %b %_d %l:%M" "date" 10,
+        Run StdinReader
+
+    ],
+    sepChar = "%",
+    alignSep = "}{",
+    template = "%StdinReader% }{ %multicpu%   %memory%   %swap%   <fc=#FFFFCC>%date%</fc>   %CYEG% "
+    }
+
+#+END_SRC
+* Emacs init
+#+BEGIN_SRC 
+;; INSTALL PACKAGES
+;; --------------------------------------
+
+(require 'package)
+
+; list the repositories containing them
+(setq package-archives '(("elpa" . "http://tromey.com/elpa/")
+                         ("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("org" . "http://orgmode.org/elpa/")
+                         ("melpa" . "http://melpa.org/packages/")))
+
+;(add-to-list 'package-archives
+;             '("org" . "http://orgmode.org/elpa/")
+;             '("melpa" . "http://melpa.org/packages/")
+;             t)
+
+(package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
+
+(setq package-list
+  '(
+    ;;intero ;;switched to dante.
+    ac-ispell
+    ac-math
+    better-defaults
+    company
+    company-math
+    company-quickhelp
+    company-statistics
+    dante
+    diffview
+    djvu
+    ein
+    elpy
+    flycheck
+    flyspell-correct-popup
+    haskell-mode
+    highlight-current-line
+    highlight-indentation
+    magit
+    magit-popup
+    magithub
+    material-theme
+    mmm-mode
+    move-text
+    multiple-cursors
+    org
+    org-beautify-theme
+    org-bullets
+    org-pdfview
+    org-plus-contrib
+    org-pomodoro
+    org-ref
+    org-time-budgets
+    org-wc
+    pdf-tools
+    powerline
+    py-autopep8
+    pyvenv
+    rainbow-delimiters
+    rainbow-mode
+    shm
+    which-key
+    ))
+
+; install the missing packages
+(dolist (package package-list)
+  (unless (package-installed-p package)
+    (package-install package)))
+
+;;(add-hook 'haskell-mode-hook 'intero-mode)
+(add-hook 'haskell-mode-hook 'dante-mode)
+(add-hook 'haskell-mode-hook 'flycheck-mode)
+
+;; BASIC CUSTOMIZATION
+;; --------------------------------------
+
+(setq inhibit-startup-message t) ;; hide the startup message
+(load-theme 'material t) ;; load material theme
+;; enable line numbers in program major modes, global linum breaks PDFtools
+(add-hook 'prog-mode-hook 'linum-mode)
+
+;; enable rainbow delimiters in program major modes
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode-enable)
+
+;; ;; PYTHON CONFIGURATION
+;; ;; --------------------------------------
+
+(elpy-enable)
+(elpy-use-ipython)
+
+;; ;; use flycheck not flymake with elpy
+(when (require 'flycheck nil t)
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (add-hook 'elpy-mode-hook 'flycheck-mode))
+
+;; enable autopep8 formatting on save
+(require 'py-autopep8)
+(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(company-ghc-show-info t)
+ '(company-idle-delay 0)
+ '(haskell-process-auto-import-loaded-modules t)
+ '(haskell-process-log t)
+ '(haskell-process-suggest-remove-import-lines t)
+ '(haskell-process-type (quote stack-ghci))
+ '(haskell-tags-on-save t)
+ '(highlight-current-line-globally nil nil (highlight-current-line))
+ '(org-clock-out-when-done t)
+ '(org-modules
+   (quote
+    (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-w3m org-bullets org-drill)))
+ '(pdf-view-display-size (quote fit-width))
+ '(pdf-view-use-imagemagick t))
+
+;; Org-mode customization
+;; ----------------------
+
+;; Install org-drill from downloaded git repository
+(add-to-list 'load-path "~/.emacs.d/pkgs/org-mode/contrib/lisp/")       
+(require 'org-drill)
+
+;; Turn on visual-line-mode for Org-mode only
+;; Also consider installing "adaptive-wrap" from elpa
+(add-hook 'org-mode-hook 'turn-on-visual-line-mode)
+
+;; Make org-mode time clock persistent across sessions
+(setq org-clock-persist 'history)
+(org-clock-persistence-insinuate)
+
+;;add todo list states for org-mode
+(setq org-todo-keywords
+  '((sequence "TODO" "IN-PROGRESS" "WAITING-ON" "|" "DONE" "CANCELLED")))
+
+;; Org-mode link insertion keybinding
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c a") 'org-agenda)
+
+;; Enable autosaved sessions
+(desktop-save-mode 1)
+
+;; Disable org-mode priorities
+(setq org-enable-priority-commands nil)
+
+;; Start emacs as a server when called from emacsclient
+(server-start)
+
+; Make Emacs look in Cabal directory for binaries
+(let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
+  (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
+  (add-to-list 'exec-path my-cabal-path))
+
+; HASKELL-MODE
+; ------------
+
+; Choose indentation mode
+;; Use haskell-mode indentation
+;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+;; Use hi2
+;(require 'hi2)
+;(add-hook 'haskell-mode-hook 'turn-on-hi2)
+;; Use structured-haskell-mode
+(add-hook 'haskell-mode-hook 'structured-haskell-mode)
+
+; Add F8 key combination for going to imports block
+(eval-after-load 'haskell-mode
+  '(define-key haskell-mode-map [f8] 'haskell-navigate-imports))
+
+; Add key combinations for interactive haskell-mode
+(eval-after-load 'haskell-mode '(progn
+  (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
+  (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+  (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
+  (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
+  (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
+  (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)))
+(eval-after-load 'haskell-cabal '(progn
+  (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+  (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
+  (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
+  (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)))
+
+(eval-after-load 'haskell-mode
+  '(define-key haskell-mode-map (kbd "C-c C-o") 'haskell-compile))
+(eval-after-load 'haskell-cabal
+  '(define-key haskell-cabal-mode-map (kbd "C-c C-o") 'haskell-compile))
+
+(setq haskell-process-type 'stack-ghci)
+(setq inferior-haskell-find-project-root nil)
+
+;; GHC-MOD
+;; -------
+
+(autoload 'ghc-init "ghc" nil t)
+(autoload 'ghc-debug "ghc" nil t)
+(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+
+;; COMPANY-GHC
+;; -----------
+
+; Enable company-mode
+(require 'company)
+; Use company in Haskell buffers
+; (add-hook 'haskell-mode-hook 'company-mode)
+; Use company in all buffers
+(add-hook 'after-init-hook 'global-company-mode)
+
+(add-to-list 'company-backends 'company-ghc)
+
+;; Convenience Functions:
+
+(defun google (string)
+  "Run a Google search in a browser."
+  (interactive "sSearch for: ")
+  (browse-url (concat "http://www.google.com/search?q=" string)))
+
+(defun google-region (from to &optional quoted)
+  "Run a Google search on the contents of the region FROM/TO"
+  (interactive "r\nP")
+  ;; (message "google-region %d %d %s" from to quoted)
+  (let ((str (buffer-substring from to)))
+    (google (if quoted (concat "\"" str "\"") str))
+    ))
+(global-set-key (kbd "C-c g") 'google-region)
+
+
+;; ERC Customization
+;; -----------------
+ '(erc-autojoin-channels-alist
+   (quote
+    (("freenode.net" "#haskell-blah" "#haskell-iphone" "#haskell-ops" "#haskell-in-depth" "#ghc" "#haskell")
+     (".*\\.freenode\\.net" "#haskell" "#ghc" "#haskell-in-depth" "#haskell-ops" "#haskell-blah" "#haskell-iphone"))))
+ '(erc-away-nickname nil)
+ '(erc-fill-column 100)
+ '(erc-fill-mode nil)
+ '(erc-nick "tput")
+ '(erc-nick-uniquifier "-")
+ '(erc-prompt-for-password f)
+ '(erc-user-full-name "Tim Put")
+ '(erc-whowas-on-nosuchnick t)
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+#+END_SRC
+* X dotfiles
+xsessionrc
+#+BEGIN_SRC 
+#!/bin/bash
+
+# Load resources
+
+# xrdb -merge .Xresources
+
+emacs --daemon &
+stalonetray &
+xscreensaver -no-splash &
+setxkbmap us &
+setxkbmap -option ctrl:nocaps &
+# feh --bg-scale /path/to/bg.png
+
+exec xmonad
+
+#+END_SRC
+XDefaults
+#+BEGIN_SRC 
+Emacs.font: Hack-12
+
+#+END_SRC

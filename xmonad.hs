@@ -99,10 +99,8 @@ myLayout =
 
 
 ------------------------------------------------------------------------
--- Colors and borders
--- Currently based on the ir_black theme.
---
-myNormalBorderColor  = "#28abb2"--soft green  --"#7c7c7c" --grey 
+-- Colors and borders, 
+myNormalBorderColor  = "#28abb2"--tealish --"#7c7c7c" --grey 
 myFocusedBorderColor = "#b5485d"--teal  --"#ffb6b0" --rose
 
 -- Colors for text and backgrounds of each tab when in "Tabbed" layout.
@@ -161,15 +159,15 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 -- , ((modMask .|. controlMask .|. shiftMask, xK_p),
 --     spawn myScreenshot)
 
-  -- Mute volume.
+  -- Mute volume with media key.
   , ((0, xF86XK_AudioMute),
      spawn "amixer -q set Master toggle")
 
-  -- Decrease volume.
+  -- Decrease volume with media key.
   , ((0, xF86XK_AudioLowerVolume),
      spawn "amixer -q set Master 2%-")
 
-  -- Increase volume.
+  -- Increase volume with media key.
   , ((0, xF86XK_AudioRaiseVolume),
      spawn "amixer -q set Master 2%+")
 
@@ -185,13 +183,15 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask, xK_F12),
      spawn "amixer -q set Master 2%+")
 
-  -- Adjust backlight with win F5/F6
-  --, ((modMask, xK_F5), spawn "light -U 10")
-  --, ((modMask, xK_F6), spawn "light -A 10")
+  -- Adjust backlight with mod + F5/F6, I'm using light-git on Arch from the AUR.
+  , ((modMask, xK_F5), spawn "light -U 10")
+  , ((modMask, xK_F6), spawn "light -A 10")
 
-  -- Launch Emacsclient with C-e
+  -- Launch emacsclient with C-e, run "emacs --daemon" on startup or add "(start server)" to your init.el 
   , ((modMask, xK_e), spawn "emacsclient -c -a emacs")
 
+  
+  -- Adjust height of window with mod + a/z, complements the default mod + h/l behaviour. 
   , ((modMask, xK_a), sendMessage MirrorShrink)
   , ((modMask, xK_z), sendMessage MirrorExpand)
   --------------------------------------------------------------------
@@ -205,7 +205,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- Cycle through the available layout algorithms.
   , ((modMask, xK_space),
      sendMessage NextLayout)
-
+    
   --  Reset the layouts on the current workspace to default.
   , ((modMask .|. shiftMask, xK_space),
      setLayout $ XMonad.layoutHook conf)
@@ -217,6 +217,10 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- Move focus to the next window.
   , ((modMask, xK_Tab),
      windows W.focusDown)
+
+  -- Move focus to the previous window.
+  , ((modMask .|. shiftMask, xK_Tab),
+     windows W.focusUp)
 
   -- Move focus to the next window.
   , ((modMask, xK_j),
@@ -261,9 +265,6 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- Decrement the number of windows in the master area.
   , ((modMask, xK_period),
      sendMessage (IncMasterN (-1)))
-
-  -- Toggle the status bar gap.
-  -- TODO: update this binding with avoidStruts, ((modMask, xK_b),
 
   -- Quit xmonad.
   , ((modMask .|. shiftMask, xK_q),

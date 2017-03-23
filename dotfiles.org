@@ -1,6 +1,6 @@
 * WM config
 #+NAME: xmonad config
-#+BEGIN_SRC haskell -n :tangle ./xmonad.hs 
+#+BEGIN_SRC haskell -n :tangle ~/.xmonad/xmonad.hs 
 -- Tim Put
 -- based on Vic Frzyel's XMonad config: http://github.com/vicfryzel/xmonad-config
 
@@ -29,7 +29,8 @@ import qualified Data.Map        as M
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
-myTerminal = "/usr/bin/konsole"
+myTerminal = "/usr/bin/gnome-terminal" --laptop terminal
+--myTerminal = "/usr/bin/konsole"  --desktop terminal
 
 -- The command to lock the screen or show the screensaver.
 myScreensaver = "/usr/bin/xscreensaver-command -lock"
@@ -187,8 +188,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
      spawn "amixer -q set Master 2%+")
 
   -- Adjust backlight with mod + F5/F6, I'm using light-git on Arch from the AUR.
-  , ((modMask, xK_F5), spawn "light -U 10")
-  , ((modMask, xK_F6), spawn "light -A 10")
+  , ((modMask, xK_F5), spawn "light -U 5")
+  , ((modMask, xK_F6), spawn "light -A 5")
 
   -- Launch emacsclient with C-e, run "emacs --daemon" on startup or add "(start server)" to your init.el 
   , ((modMask, xK_e), spawn "emacsclient -c -a emacs")

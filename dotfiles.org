@@ -668,10 +668,10 @@ Config {
 
 # Load resources
 
-# xrdb -merge .Xresources
+xrdb -merge .Xresources
 
 emacs --daemon &
-stalonetray &
+# stalonetray &
 xscreensaver -no-splash &
 setxkbmap us &
 setxkbmap -option ctrl:nocaps &

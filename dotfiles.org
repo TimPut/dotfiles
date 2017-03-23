@@ -375,7 +375,7 @@ defaults = defaultConfig {
 
 #+END_SRC
 #+NAME: xmobar config
-#+BEGIN_SRC haskell -n :tangle ./xmobar.hs
+#+BEGIN_SRC haskell -n :tangle ~/.xmonad/xmobar.hs
 -- xmobar config used by Vic Fryzel
 -- Author: Vic Fryzel
 -- http://github.com/vicfryzel/xmonad-config
@@ -673,7 +673,7 @@ Config {
 #+END_SRC
 * X dotfiles
 .xsessionrc
-#+BEGIN_SRC bash -n :tangle ./.xsessionrc
+#+BEGIN_SRC bash -n :tangle ~/.xsessionrc
 #!/bin/bash
 
 # Load resources
@@ -691,7 +691,7 @@ exec xmonad
 
 #+END_SRC
 .Xdefaults
-#+BEGIN_SRC bash -n :tangle ./.Xdefaults
+#+BEGIN_SRC bash -n :tangle ~/.Xdefaults
 Emacs.font: Hack-12
 
 #+END_SRC

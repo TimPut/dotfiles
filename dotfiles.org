@@ -404,7 +404,7 @@ Config {
 
 #+END_SRC
 * Emacs init
-#+BEGIN_SRC emacs-lisp -n :tangle ./init.el 
+#+BEGIN_SRC emacs-lisp -n :tangle ~/.emacs.d/init.el 
 ;; INSTALL PACKAGES
 ;; --------------------------------------
 
@@ -431,6 +431,7 @@ Config {
     ;;intero ;;switched to dante.
     ac-ispell
     ac-math
+    auctex
     better-defaults
     company
     company-math
@@ -454,6 +455,7 @@ Config {
     move-text
     multiple-cursors
     org
+    org-ac
     org-beautify-theme
     org-bullets
     org-pdfview
@@ -492,6 +494,15 @@ Config {
 ;; enable rainbow delimiters in program major modes
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode-enable)
 
+;; setup files ending in “.pdf” to open in pdf-tools
+(add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
+
+;; Enable autosaved sessions
+(desktop-save-mode 1)
+
+;; Start emacs as a server when called from emacsclient
+(server-start)
+
 ;; ;; PYTHON CONFIGURATION
 ;; ;; --------------------------------------
 
@@ -519,8 +530,9 @@ Config {
  '(haskell-process-suggest-remove-import-lines t)
  '(haskell-process-type (quote stack-ghci))
  '(haskell-tags-on-save t)
- '(highlight-current-line-globally nil nil (highlight-current-line))
  '(org-clock-out-when-done t)
+ '(org-log-into-drawer t)
+ '(org-use-speed-commands t)
  '(org-modules
    (quote
     (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-w3m org-bullets org-drill)))
@@ -544,20 +556,17 @@ Config {
 
 ;;add todo list states for org-mode
 (setq org-todo-keywords
-  '((sequence "TODO" "IN-PROGRESS" "WAITING-ON" "|" "DONE" "CANCELLED")))
+      '((sequence "TODO(t)" "IN-PROGRESS(i)" "WAITING-ON(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
+(setq org-todo-keyword-faces
+      '(("IN-PROGRESS" . "yellow")
+        ("CANCELED" . "blue")))
 
 ;; Org-mode link insertion keybinding
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c a") 'org-agenda)
 
-;; Enable autosaved sessions
-(desktop-save-mode 1)
-
 ;; Disable org-mode priorities
 (setq org-enable-priority-commands nil)
-
-;; Start emacs as a server when called from emacsclient
-(server-start)
 
 ; Make Emacs look in Cabal directory for binaries
 (let ((my-cabal-path (expand-file-name "~/.cabal/bin")))

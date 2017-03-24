@@ -376,32 +376,45 @@ defaults = defaultConfig {
 #+END_SRC
 #+NAME: xmobar config
 #+BEGIN_SRC haskell -n :tangle ~/.xmonad/xmobar.hs
--- xmobar config used by Vic Fryzel
--- Author: Vic Fryzel
--- http://github.com/vicfryzel/xmonad-config
-
--- This is setup for a 1920x1080 monitor
 Config {
 --    font = "xft:Fixed-8",
-    font = "xft:Hack-12,Fixed-12",
+    font = "xft:Hack-12:antialias=true,Fixed-12",
     bgColor = "#000000",
     fgColor = "#ffffff",
-    position = Static { xpos = 0, ypos = 0, width = 1920, height = 16 },
+    --position = Static { xpos = 0, ypos = 0, width = 1920, height = 16 },
+    position = Top
+    border = BottomB (-3) 
     lowerOnStart = True,
     commands = [
-        Run Weather "CYEG" ["-t","<tempC>C <skyCondition>","-L","64","-H","77","-n","#CEFFAC","-h","#FFB6B0","-l","#96CBFE"] 36000,
-        Run MultiCpu ["-t","Cpu:<autototal> Total:<total>%",
-                      "-L","30","-H","60","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC","-w","3"] 10,
-        Run Memory ["-t","Mem:<usedratio>%","-H","8192","-L","4096","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10,
-        Run Swap ["-t","Swap:<usedratio>%","-H","1024","-L","512","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10,
-        --Run Network "em1" ["-t","Net: <rx>, <tx>","-H","200","-L","10","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10,
-        Run Date "%a %b %_d %l:%M" "date" 10,
-        Run StdinReader
+        Run Weather "CYEG" ["-t","<tempC>C <skyCondition> RH:<rh>% <pressure>hPa","-L","64","-H","77","-n","#CEFFAC","-h","#FFB6B0","-l","#96CBFE"] 36000
+        , Run MultiCpu ["-t","Cpu:<autototal> Total:<total>%",
+                      "-L","30","-H","60","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC","-w","3"] 10
+        , Run Memory ["-t","Mem:<usedratio>%","-H","8192","-L","4096","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
+        --, Run Swap ["-t","Swap:<usedratio>%","-H","1024","-L","512","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
+        --, Run Network "em1" ["-t","Net: <rx>, <tx>","-H","200","-L","10","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
+        , Run Date "%a %b %_d %l:%M" "date" 10
+        -- battery monitor
+        , Run Battery        [ "--template" , "Batt: <acstatus>"
+                             , "--Low"      , "10"        -- units: %
+                             , "--High"     , "80"        -- units: %
+                             , "--low"      , "darkred"
+                             , "--normal"   , "darkorange"
+                             , "--high"     , "darkgreen"
+
+                             , "--" -- battery specific options
+                             -- discharging status
+                             , "-o"	, "<left>% <timeleft>"
+                             -- AC "on" status
+                             , "-O"	, "<fc=#dAA520>Charging</fc>"
+                             -- charged status
+                             , "-i"	, "<fc=#006000>Charged</fc>"
+                             ] 50
+        , Run StdinReader
 
     ],
     sepChar = "%",
     alignSep = "}{",
-    template = "%StdinReader% }{ %multicpu%   %memory%   %swap%   <fc=#FFFFCC>%date%</fc>   %CYEG% "
+    template = "%StdinReader% }{ %multicpu%  %memory%  %battery% <fc=#FFFFCC>%date%</fc> %CYEG% "
     }
 
 #+END_SRC

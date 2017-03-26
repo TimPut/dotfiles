@@ -28,9 +28,10 @@ import qualified Data.Map        as M
 -- Terminal
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
---
-myTerminal = "/usr/bin/gnome-terminal" --laptop terminal
---myTerminal = "/usr/bin/konsole"  --desktop terminal
+
+--myTerminal = "/usr/bin/gnome-terminal"
+--myTerminal = "/usr/bin/konsole"
+myTerminal = "/usr/bin/urxvt"
 
 -- The command to lock the screen or show the screensaver.
 myScreensaver = "/usr/bin/xscreensaver-command -lock"
@@ -687,11 +688,10 @@ Config {
 #+END_SRC
 * X dotfiles
 .xsessionrc
-#+BEGIN_SRC bash -n :tangle ~/.xsessionrc
+#+BEGIN_SRC bash -n :tangle ~/.xprofile
 #!/bin/bash
 
 # Load resources
-
 xrdb -merge .Xresources
 
 emacs --daemon &
@@ -701,11 +701,47 @@ setxkbmap us &
 setxkbmap -option ctrl:nocaps &
 # feh --bg-scale /path/to/bg.png
 
-exec xmonad
-
 #+END_SRC
 .Xdefaults
 #+BEGIN_SRC bash -n :tangle ~/.Xdefaults
 Emacs.font: Hack-12
+#+END_SRC
+
+#+BEGIN_SRC bash -n :tangle ~/.Xresources
+*foreground:      #ffffff
+*background:      #263238
+
+*color0:          #a7adba
+*color1:          #dd191d
+*color2:          #0a8f08
+*color3:          #afb42b
+*color4:          #4e6cef
+*color5:          #d81b60
+*color6:          #00acc1
+*color7:          #868686
+*color8:          #121212
+*color9:          #e84e40
+*color10:         #2baf2b
+*color11:         #d4e157
+*color12:         #738ffe
+*color13:         #ec407a
+*color14:         #26c6da
+*color15:         #dadada
+
+*highlightColor:  #303f9f
+*cursorColor:     #ffc400
+
+XTerm*termName: xterm-256color
+*faceName:             Hack:size=12:antialias=true
+! URXVT specific settings
+URxvt.font:             xft:Hack:size=12:antialias=true
+URxvt.scrollBar: false
 
 #+END_SRC
+
+#+BEGIN_SRC bash -n :tangle ~/.gitconfig
+[user]
+	email = timput@gmail.com
+	name = tim put
+#+END_SRC
+

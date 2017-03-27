@@ -125,19 +125,19 @@ myFocusedBorderColor = "#b5485d"--teal  --"#ffb6b0" --rose
 
 -- Colors for text and backgrounds of each tab when in "Tabbed" layout.
 tabConfig = defaultTheme {
-    activeBorderColor = "#7C7C7C",
-    activeTextColor = "#CEFFAC",
+    activeBorderColor = "##28abb2",
+    activeTextColor = "#9ccc65", --"#CEFFAC"
     activeColor = "#000000",
-    inactiveBorderColor = "#7C7C7C",
+    inactiveBorderColor = "#28abb2", -- #7C7C7C",
     inactiveTextColor = "#EEEEEE",
     inactiveColor = "#000000"
 }
 
 -- Color of current window title in xmobar.
-xmobarTitleColor = "#FFB6B0"
+xmobarTitleColor = "#F36B60" --"#FFB6B0"
 
 -- Color of current workspace in xmobar.
-xmobarCurrentWorkspaceColor = "#CEFFAC"
+xmobarCurrentWorkspaceColor = "#9ccc65"  --"#CEFFAC"
 
 -- Width of the window border in pixels.
 myBorderWidth = 4
@@ -402,10 +402,10 @@ Config {
     border = BottomB (-10) 
     lowerOnStart = True,
     commands = [
-        Run Weather "CYEG" ["-t","<tempC>C <skyCondition> RH:<rh>% <pressure>hPa","-L","64","-H","77","-n","#CEFFAC","-h","#FFB6B0","-l","#96CBFE"] 36000
-        , Run MultiCpu ["-t","Cpu:<autototal> Total:<total>%",
-                      "-L","30","-H","60","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC","-w","3"] 10
-        , Run Memory ["-t","Mem:<usedratio>%","-H","8192","-L","4096","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
+        Run Weather "CYEG" ["-t","<tempC>C <skyCondition> RH:<rh>% <pressure>hPa","-L","64","-H","77","-n","#9ccc65","-h","#FFB6B0","-l","#96CBFE"] 36000
+        , Run MultiCpu ["-t","CPU:<autototal> Total:<total>%",
+                      "-L","30","-H","60","-h","#F36B60","-l","#9ccc65","-n","#FFFFCC","-w","3"] 10
+        , Run Memory ["-t","Mem:<usedratio>%","-H","8192","-L","4096","-h","#FFB6B0","-l","#9ccc65","-n","#FFFFCC"] 10
         --, Run Swap ["-t","Swap:<usedratio>%","-H","1024","-L","512","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
         --, Run Network "em1" ["-t","Net: <rx>, <tx>","-H","200","-L","10","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10
         , Run Date "%a %b %_d %l:%M" "date" 10
@@ -415,7 +415,7 @@ Config {
                              , "--High"     , "80"        -- units: %
                              , "--low"      , "darkred"
                              , "--normal"   , "darkorange"
-                             , "--high"     , "darkgreen"
+                             , "--high"     , "#9ccc65"
 
                              , "--" -- battery specific options
                              -- discharging status
@@ -423,18 +423,19 @@ Config {
                              -- AC "on" status
                              , "-O"	, "<fc=#dAA520>Charging</fc>"
                              -- charged status
-                             , "-i"	, "<fc=#006000>Charged</fc>"
+                             , "-i"	, "<fc=#9ccc65>Charged</fc>"
                              ] 50
         , Run StdinReader
 
     ],
     sepChar = "%",
     alignSep = "}{",
-    template = "%StdinReader% }{ %multicpu%  %memory%  %battery% <fc=#FFFFCC>%date%</fc> %CYEG% "
+    template = "%StdinReader% }{ %multicpu%  %memory%  %battery% <fc=#FFCC80>%date%</fc> %CYEG% "
     }
 
 #+END_SRC
 * Emacs init
+
 #+BEGIN_SRC emacs-lisp -n :tangle ~/.emacs.d/init.el 
 ;; INSTALL PACKAGES
 ;; --------------------------------------

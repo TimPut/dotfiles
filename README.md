@@ -2,7 +2,7 @@
 Here live most of my dotfiles.
 
 You'll need both the base xmonad and the extra contrib libraries installed, as well as xmobar.
-This is configured to use yeganesh as an alternative launcher to dmenu and urxvt as terminal emulator.
+This is configured to use yeganesh as a wrapper for dmenu and urxvt as terminal emulator.
 
 org-babel-tangle will tangle all code blocks and place the resulting files in the default
 locations.

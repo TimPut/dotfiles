@@ -4,7 +4,7 @@
 Here live most of my dotfiles.
 
 You'll need both the base xmonad and the extra contrib libraries installed, as well as xmobar.
-This is configured to use yeganesh as an alternative launcher to dmenu and urxvt as terminal emulator.
+This is configured to use yeganesh as a wrapper for dmenu and urxvt as terminal emulator.
 
 org-babel-tangle will tangle all code blocks and place the resulting files in the default
 locations.
@@ -44,8 +44,6 @@ import qualified Data.Map        as M
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 
---myTerminal = "/usr/bin/gnome-terminal"
---myTerminal = "/usr/bin/konsole"
 myTerminal = "/usr/bin/urxvt"
 
 -- The command to lock the screen or show the screensaver.
@@ -57,8 +55,8 @@ myScreensaver = "/usr/bin/xscreensaver-command -lock"
 
 -- The command to use as a launcher, to launch commands that don't have
 -- preset keybindings.
-myLauncher = "$(/usr/bin/yeganesh -x -- -fn '-*-terminus-*-r-normal-*-*-120-*-*-*-*-iso8859-*' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC')"
-
+--myLauncher = "$(/usr/bin/yeganesh -x -- -fn '-*-terminus-*-r-normal-*-*-120-*-*-*-*-iso8859-*' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC')"
+myLauncher = "/usr/bin/demu_run -fn '-*hack-*-r-normal-*-*-120-*-*-*-*-*-*' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC'"
 
 ------------------------------------------------------------------------
 -- Workspaces
@@ -398,8 +396,8 @@ Config {
     bgColor = "#000000",
     fgColor = "#ffffff",
     --position = Static { xpos = 0, ypos = 0, width = 1920, height = 16 },
-    position = Top
-    border = BottomB (-10) 
+    position = Top,
+    border = BottomB (-10), 
     lowerOnStart = True,
     commands = [
         Run Weather "CYEG" ["-t","<tempC>C <skyCondition> RH:<rh>% <pressure>hPa","-L","64","-H","77","-n","#9ccc65","-h","#FFB6B0","-l","#96CBFE"] 36000
@@ -694,12 +692,17 @@ Config {
  '(erc-user-full-name "Tim Put")
  '(erc-whowas-on-nosuchnick t)
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(setq erc-rename-buffers t)
+;; The following are commented out by default, but users of other
+;; non-Emacs IRC clients might find them useful.
+;; Kill buffers for channels after /part
+(setq erc-kill-buffer-on-part t)
+;; Kill buffers for private queries after quitting the server
+(setq erc-kill-queries-on-quit t)
+;; Kill buffers for server messages after quitting the server
+(setq erc-kill-server-buffer-on-quit t)
+
+
  
 #+END_SRC
 * X dotfiles

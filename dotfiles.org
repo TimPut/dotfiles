@@ -55,8 +55,8 @@ myScreensaver = "/usr/bin/xscreensaver-command -lock"
 
 -- The command to use as a launcher, to launch commands that don't have
 -- preset keybindings.
---myLauncher = "$(/usr/bin/yeganesh -x -- -fn '-*-terminus-*-r-normal-*-*-120-*-*-*-*-iso8859-*' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC')"
-myLauncher = "/usr/bin/demu_run -fn '-*hack-*-r-normal-*-*-120-*-*-*-*-*-*' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC'"
+run_yeganesh = "yeganesh -x -- -fn '-*-terminus-*-r-normal-*-*-120-*-*-*-*-iso8859-*' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC'"
+run_dmenu = "dmenu_run -fn 'xft:Hack:size=12:antialias=true' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC'"
 
 ------------------------------------------------------------------------
 -- Workspaces
@@ -82,11 +82,7 @@ myWorkspaces = ["1:terminal","2:chromium","3:emacs","4:study","5:reading","6:org
 myManageHook = composeAll
     [ className =? "Chromium"       --> doShift "2:web"
     , className =? "Google-chrome"  --> doShift "2:web"
-    , resource  =? "desktop_window" --> doIgnore
-    , className =? "Galculator"     --> doFloat
-    , className =? "Steam"          --> doFloat
     , className =? "Darktable"      --> doFloat
-    , resource  =? "gpicview"       --> doFloat
     , className =? "VLC"            --> doFloat
     , className =? "stalonetray"    --> doIgnore
     , isFullscreen                  --> doFullFloat --doF W.focusDown <+> doFullFloat)
@@ -167,7 +163,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- Spawn the launcher using command specified by myLauncher.
   -- Use this to launch programs without a key binding.
   , ((modMask, xK_p),
-     spawn myLauncher)
+     spawn run_dmenu)
 
   -- Take a selective screenshot using the command specified by mySelectScreenshot.
 --  , ((modMask .|. shiftMask, xK_p),
@@ -382,22 +378,23 @@ defaults = defaultConfig {
     layoutHook         = smartBorders $ myLayout,
     manageHook         = myManageHook,
     startupHook        = myStartupHook,
-    handleEventHook    = mconcat
-                       [ docksEventHook
-                       , handleEventHook defaultConfig ]
+    handleEventHook    = docksEventHook
+--    handleEventHook    = mconcat
+--                       [ docksEventHook
+--                       , handleEventHook defaultConfig ]
 }
 
 #+END_SRC
 #+NAME: xmobar config
 #+BEGIN_SRC haskell -n :tangle ~/.xmonad/xmobar.hs
 Config {
---    font = "xft:Fixed-8",
+--  font = "xft:Fixed-8",
     font = "xft:Hack-10:antialias=true,Fixed-12",
     bgColor = "#000000",
     fgColor = "#ffffff",
     --position = Static { xpos = 0, ypos = 0, width = 1920, height = 16 },
     position = Top,
-    border = BottomB (-10), 
+    border = BottomB (10), 
     lowerOnStart = True,
     commands = [
         Run Weather "CYEG" ["-t","<tempC>C <skyCondition> RH:<rh>% <pressure>hPa","-L","64","-H","77","-n","#9ccc65","-h","#FFB6B0","-l","#96CBFE"] 36000

@@ -759,5 +759,45 @@ URxvt.scrollBar: false
 [user]
 	email = timput@gmail.com
 	name = tim put
+[core]
+	excludesfile = /home/tim/.gitignore
+
 #+END_SRC
 
+#+BEGIN_SRC bash -n :tangle ~/.gitignore
+# Python intermediates
+~.pyo
+~.pyc
+
+# Compiled elisp
+*.elc
+# Packaging
+.cask
+# Backup files
+*~
+*#
+# Undo-tree save-files
+*.~undo-tree
+
+# Haskell intermediates
+dist
+dist-*
+cabal-dev
+*.o
+*.hi
+*.chi
+*.chs.h
+*.dyn_o
+*.dyn_hi
+.hpc
+.hsenv
+.cabal-sandbox/
+cabal.sandbox.config
+*.prof
+*.aux
+*.hp
+*.eventlog
+.stack-work/
+cabal.project.local
+.HTF/
+#+END_SRC

@@ -163,7 +163,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- Spawn the launcher using command specified by myLauncher.
   -- Use this to launch programs without a key binding.
   , ((modMask, xK_p),
-     spawn run_yeganesh)
+     spawn run_dmenu)
 
   -- Take a selective screenshot using the command specified by mySelectScreenshot.
 --  , ((modMask .|. shiftMask, xK_p),
@@ -676,18 +676,17 @@ Config {
 
 ;; ERC Customization
 ;; -----------------
- '(erc-autojoin-channels-alist
-   (quote
-    (("freenode.net" "#haskell-blah" "#haskell-iphone" "#haskell-ops" "#haskell-in-depth" "#ghc" "#haskell")
-     (".*\\.freenode\\.net" "#haskell" "#ghc" "#haskell-in-depth" "#haskell-ops" "#haskell-blah" "#haskell-iphone"))))
- '(erc-away-nickname nil)
- '(erc-fill-column 100)
- '(erc-fill-mode nil)
- '(erc-nick "tput")
- '(erc-nick-uniquifier "-")
- '(erc-prompt-for-password f)
- '(erc-user-full-name "Tim Put")
- '(erc-whowas-on-nosuchnick t)
+(setq erc-autojoin-channels-alist
+    '(("freenode.net" "#haskell-blah" "#haskell-in-depth" "#ghc" "#haskell")
+     (".*\\.freenode\\.net" "#haskell" "#ghc" "#haskell-in-depth" "#haskell-ops" "#haskell-blah" "#haskell-iphone")))
+(setq erc-away-nickname nil)
+(setq erc-fill-column 100)
+(setq erc-fill-mode nil)
+(setq erc-nick "tput")
+(setq erc-nick-uniquifier "-")
+(setq erc-prompt-for-password nil)
+(setq erc-user-full-name "Tim Put")
+(setq erc-whowas-on-nosuchnick t)
 
 (setq erc-rename-buffers t)
 ;; The following are commented out by default, but users of other

@@ -771,11 +771,15 @@ URxvt.scrollBar: false
 
 # Compiled elisp
 *.elc
+
 # Packaging
 .cask
+
 # Backup files
-*~
+.#*
 *#
+\#*
+
 # Undo-tree save-files
 *.~undo-tree
 

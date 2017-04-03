@@ -163,7 +163,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- Spawn the launcher using command specified by myLauncher.
   -- Use this to launch programs without a key binding.
   , ((modMask, xK_p),
-     spawn run_yeganesh)
+     spawn run_dmenu)
 
   -- Take a selective screenshot using the command specified by mySelectScreenshot.
 --  , ((modMask .|. shiftMask, xK_p),
@@ -430,7 +430,7 @@ Config {
 
 #+END_SRC
 * Emacs init
-
+  
 #+BEGIN_SRC emacs-lisp -n :tangle ~/.emacs.d/init.el 
 ;; INSTALL PACKAGES
 ;; --------------------------------------
@@ -510,6 +510,8 @@ Config {
 (add-hook 'haskell-mode-hook 'dante-mode)
 (add-hook 'haskell-mode-hook 'flycheck-mode)
 
+;; Make sure pdf-tools self-compiles
+(pdf-tools-install)
 ;; BASIC CUSTOMIZATION
 ;; --------------------------------------
 
@@ -676,19 +678,22 @@ Config {
 
 ;; ERC Customization
 ;; -----------------
- '(erc-autojoin-channels-alist
-   (quote
-    (("freenode.net" "#haskell-blah" "#haskell-iphone" "#haskell-ops" "#haskell-in-depth" "#ghc" "#haskell")
-     (".*\\.freenode\\.net" "#haskell" "#ghc" "#haskell-in-depth" "#haskell-ops" "#haskell-blah" "#haskell-iphone"))))
- '(erc-away-nickname nil)
- '(erc-fill-column 100)
- '(erc-fill-mode nil)
- '(erc-nick "tput")
- '(erc-nick-uniquifier "-")
- '(erc-prompt-for-password f)
- '(erc-user-full-name "Tim Put")
- '(erc-whowas-on-nosuchnick t)
+(setq erc-autojoin-channels-alist
+    '(("freenode.net" "#haskell-blah" "#haskell-in-depth" "#ghc" "#haskell")
+     (".*\\.freenode\\.net" "#haskell" "#ghc" "#haskell-in-depth" "#haskell-ops" "#haskell-blah" "#haskell-iphone")))
+(setq erc-away-nickname nil)
+(setq erc-fill-column 100)
+(setq erc-fill-mode nil)
+(setq erc-nick "tput")
+(setq erc-nick-uniquifier "-")
+(setq erc-prompt-for-password nil)
+(setq erc-user-full-name "Tim Put")
+(setq erc-whowas-on-nosuchnick t)
 
+;; Suppress join-part messages.
+(setq erc-hide-list '("JOIN" "PART" "QUIT"))
+
+;; Set buffer names to match the channel (plays nice with WM)
 (setq erc-rename-buffers t)
 ;; The following are commented out by default, but users of other
 ;; non-Emacs IRC clients might find them useful.
@@ -724,6 +729,7 @@ Emacs.font: Hack-12
 #+END_SRC
 
 #+BEGIN_SRC bash -n :tangle ~/.Xresources
+! Global colour config
 *foreground:      #ffffff
 *background:      #263238
 
@@ -753,6 +759,17 @@ XTerm*termName: xterm-256color
 URxvt.font:             xft:Hack:size=12:antialias=true
 URxvt.scrollBar: false
 
+! Global font config
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintslight
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb
+
+! xscreensaver config
+! makes new login button go away.
+xscreensaver.newLoginCommand: 
 #+END_SRC
 
 #+BEGIN_SRC bash -n :tangle ~/.gitconfig
@@ -804,4 +821,10 @@ cabal.sandbox.config
 .stack-work/
 cabal.project.local
 .HTF/
+#+END_SRC
+* Feh
+#+BEGIN_SRC bash -n tangle: ~/.fehbg 
+#!/bin/sh
+feh  --bg-scale '/home/tim/Downloads/MEMES/pepebg.png' 
+
 #+END_SRC

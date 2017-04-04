@@ -718,11 +718,24 @@ Config {
 # Load resources
 xrdb -merge .Xresources
 
+# start emacs server daemon.
 emacs --daemon &
+
+# improve laptop battery life
+powertop -q --auto-tune &
 # stalonetray &
+
+# start screen locker daemon
 xscreensaver -no-splash &
+
+# set keyboard map and caps-lock as ctrl
 setxkbmap us &
 setxkbmap -option ctrl:nocaps &
+
+# enable trackpad palm-detector
+synclient PalmDetect=1 &
+
+# set background
 # feh --bg-scale /path/to/bg.png
 
 #+END_SRC

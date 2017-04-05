@@ -680,7 +680,7 @@ Config {
 ;; -----------------
 (setq erc-autojoin-channels-alist
     '(("freenode.net" "#haskell-blah" "#haskell-in-depth" "#ghc" "#haskell")
-     (".*\\.freenode\\.net" "#haskell" "#ghc" "#haskell-in-depth" "#haskell-ops" "#haskell-blah" "#haskell-iphone")))
+     (".*\\.freenode\\.net" "#haskell" "#ghc" "#haskell-in-depth" "#haskell-blah")))
 (setq erc-away-nickname nil)
 (setq erc-fill-column 100)
 (setq erc-fill-mode nil)

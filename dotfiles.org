@@ -690,7 +690,7 @@ Config {
 (setq erc-fill-mode nil)
 (setq erc-nick "tput")
 (setq erc-nick-uniquifier "-")
-(setq erc-prompt-for-password nil)
+(setq erc-prompt-for-password t)
 (setq erc-user-full-name "Tim Put")
 (setq erc-whowas-on-nosuchnick t)
 

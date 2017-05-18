@@ -80,9 +80,8 @@ myWorkspaces = ["1:terminal","2:chromium","3:emacs","4:study","5:reading","6:org
 -- 'className' and 'resource' are used below.
 --
 myManageHook = composeAll
-    [ className =? "Chromium"       --> doShift "2:web"
-    , className =? "Google-chrome"  --> doShift "2:web"
-    , className =? "Darktable"      --> doFloat
+    [ 
+    className =? "Darktable"      --> doFloat
     , className =? "VLC"            --> doFloat
     , className =? "stalonetray"    --> doIgnore
     , isFullscreen                  --> doFullFloat --doF W.focusDown <+> doFullFloat)
@@ -396,6 +395,7 @@ Config {
     position = Top,
     border = BottomB (10), 
     lowerOnStart = True,
+    pickBroadest = True.
     commands = [
         Run Weather "CYEG" ["-t","<tempC>C <skyCondition> RH:<rh>% <pressure>hPa","-L","64","-H","77","-n","#9ccc65","-h","#FFB6B0","-l","#96CBFE"] 36000
         , Run MultiCpu ["-t","CPU:<autototal> Total:<total>%",
@@ -455,7 +455,7 @@ Config {
 
 (setq package-list
   '(
-    ;;intero ;;switched to dante.
+    intero ;;switched to dante.
     ac-ispell
     ac-math
     auctex
@@ -464,7 +464,7 @@ Config {
     company-math
     company-quickhelp
     company-statistics
-    dante
+    ;;dante
     diffview
     djvu
     ein
@@ -507,7 +507,8 @@ Config {
     (package-install package)))
 
 ;;(add-hook 'haskell-mode-hook 'intero-mode)
-(add-hook 'haskell-mode-hook 'dante-mode)
+(add-hook 'haskell-mode-hook 'intero-mode)
+;;(add-hook 'haskell-mode-hook 'dante-mode)
 (add-hook 'haskell-mode-hook 'flycheck-mode)
 
 ;; Make sure pdf-tools self-compiles
@@ -610,12 +611,12 @@ Config {
 
 ; Choose indentation mode
 ;; Use haskell-mode indentation
-;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 ;; Use hi2
 ;(require 'hi2)
 ;(add-hook 'haskell-mode-hook 'turn-on-hi2)
 ;; Use structured-haskell-mode
-(add-hook 'haskell-mode-hook 'structured-haskell-mode)
+;;(add-hook 'haskell-mode-hook 'structured-haskell-mode)
 
 ; Add F8 key combination for going to imports block
 (eval-after-load 'haskell-mode
@@ -641,14 +642,14 @@ Config {
   '(define-key haskell-cabal-mode-map (kbd "C-c C-o") 'haskell-compile))
 
 (setq haskell-process-type 'stack-ghci)
-(setq inferior-haskell-find-project-root nil)
+;;(setq inferior-haskell-find-project-root nil)
 
 ;; GHC-MOD
 ;; -------
 
-(autoload 'ghc-init "ghc" nil t)
-(autoload 'ghc-debug "ghc" nil t)
-(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+;;(autoload 'ghc-init "ghc" nil t)
+;;(autoload 'ghc-debug "ghc" nil t)
+;;(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
 
 ;; COMPANY-GHC
 ;; -----------
@@ -734,6 +735,9 @@ setxkbmap -option ctrl:nocaps &
 
 # enable trackpad palm-detector
 synclient PalmDetect=1 &
+
+# start google drive sync client
+insync start &
 
 # set background
 # feh --bg-scale /path/to/bg.png

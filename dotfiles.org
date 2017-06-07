@@ -732,12 +732,15 @@ xscreensaver -no-splash &
 setxkbmap us &
 setxkbmap -option ctrl:nocaps &
 
-# enable trackpad palm-detector
-synclient PalmDetect=1 &
+# enable and configure trackpad palm-detector
+synclient PalmDetect=1 PalmMinWidth=2 PalmMinZ=100 &
+
+# start udiskie for easy automatic usb storage device mounting, require udiskie and udisks(2)
+udiskie -TaN &
 
 # set background
 # feh --bg-scale /path/to/bg.png
-
+~/.fehbg
 #+END_SRC
 .Xdefaults
 #+BEGIN_SRC bash -n :tangle ~/.Xdefaults
@@ -793,7 +796,7 @@ xscreensaver.newLoginCommand:
 	email = timput@gmail.com
 	name = tim put
 [core]
-	excludesfile = /home/tim/.gitignore
+	excludesfile = ~/.gitignore
 
 #+END_SRC
 
@@ -841,6 +844,6 @@ cabal.project.local
 * Feh
 #+BEGIN_SRC bash -n tangle: ~/.fehbg 
 #!/bin/sh
-feh  --bg-scale '/home/tim/Downloads/MEMES/pepebg.png' 
+feh  --bg-scale '~/Downloads/MEMES/pepebg.png' 
 
 #+END_SRC

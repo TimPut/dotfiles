@@ -450,16 +450,6 @@ Config {
              ))
 (package-initialize)
 
-;; Bootstrap `use-package'
-;(unless (package-installed-p 'use-package)
-;	(package-refresh-contents)
-;	(package-install 'use-package))
-;
-;(use-package which-key
-;	:ensure t 
-;	:config
-;	(which-key-mode))
-
 (load "~/.emacs.d/init_main.el")
 (load "~/.emacs.d/init_org.el")
 (load "~/.emacs.d/init_py.el")
@@ -480,16 +470,13 @@ Config {
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (shm rainbow-mode rainbow-delimiters py-autopep8 powerline org-wc org-time-budgets org-ref org-pomodoro org-plus-contrib org-pdfview org-bullets org-beautify-theme org-ac multiple-cursors move-text mmm-mode material-theme magithub magit highlight-current-line haskell-mode flyspell-correct-popup flycheck elpy ein djvu diffview company-statistics company-quickhelp company-math company better-defaults auctex which-key use-package ac-math ac-ispell)))
- ;'(company-ghc-show-info t)
- ;'(company-idle-delay 0)
- ;'(haskell-process-auto-import-loaded-modules t)
- ;'(haskell-process-log t)
- ;'(haskell-process-suggest-remove-import-lines t)
+ '(company-ghc-show-info t)
+ '(company-idle-delay 0)
+ '(haskell-process-auto-import-loaded-modules t)
+ '(haskell-process-log t)
+ '(haskell-process-suggest-remove-import-lines t)
  ;'(haskell-process-type (quote stack-ghci))
- ;'(haskell-tags-on-save t)
+ '(haskell-tags-on-save t)
  '(org-clock-out-when-done t)
  '(org-log-into-drawer t)
  '(org-use-speed-commands t)
@@ -563,7 +550,7 @@ Config {
      rainbow-delimiters
      rainbow-mode
      ;shm
-     which-key
+     ;which-key
      ))
 
  ; install the missing packages

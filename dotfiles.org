@@ -430,139 +430,66 @@ Config {
 
 #+END_SRC
 * Emacs init
-  
-#+BEGIN_SRC emacs-lisp -n :tangle ~/.emacs.d/init.el 
-;; INSTALL PACKAGES
-;; --------------------------------------
-
-(require 'package)
-
-; list the repositories containing them
-(setq package-archives '(("elpa" . "http://tromey.com/elpa/")
-                         ("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("org" . "http://orgmode.org/elpa/")
-                         ("melpa" . "http://melpa.org/packages/")))
-
-;(add-to-list 'package-archives
-;             '("org" . "http://orgmode.org/elpa/")
-;             '("melpa" . "http://melpa.org/packages/")
-;             t)
-
-(package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
-
-(setq package-list
-  '(
-    intero ;;switched to dante.
-    ac-ispell
-    ac-math
-    auctex
-    better-defaults
-    company
-    company-math
-    company-quickhelp
-    company-statistics
-    ;;dante
-    diffview
-    djvu
-    ein
-    elpy
-    flycheck
-    flyspell-correct-popup
-    haskell-mode
-    highlight-current-line
-    highlight-indentation
-    magit
-    magit-popup
-    magithub
-    material-theme
-    mmm-mode
-    move-text
-    multiple-cursors
-    org
-    org-ac
-    org-beautify-theme
-    org-bullets
-    org-pdfview
-    org-plus-contrib
-    org-pomodoro
-    org-ref
-    org-time-budgets
-    org-wc
-    pdf-tools
-    powerline
-    py-autopep8
-    pyvenv
-    rainbow-delimiters
-    rainbow-mode
-    shm
-    which-key
-    ))
-
-; install the missing packages
-(dolist (package package-list)
-  (unless (package-installed-p package)
-    (package-install package)))
-
-;;(add-hook 'haskell-mode-hook 'intero-mode)
-(add-hook 'haskell-mode-hook 'intero-mode)
-;;(add-hook 'haskell-mode-hook 'dante-mode)
-(add-hook 'haskell-mode-hook 'flycheck-mode)
-
-;; Make sure pdf-tools self-compiles
-(pdf-tools-install)
-;; BASIC CUSTOMIZATION
-;; --------------------------------------
-
-(setq inhibit-startup-message t) ;; hide the startup message
-(load-theme 'material t) ;; load material theme
-;; enable line numbers in program major modes, global linum breaks PDFtools
-(add-hook 'prog-mode-hook 'linum-mode)
-
-;; enable rainbow delimiters in program major modes
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode-enable)
-
-;; setup files ending in “.pdf” to open in pdf-tools
-(add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
-
-;; Enable autosaved sessions
-(desktop-save-mode 1)
-
-;; Enable move-text default keybindings
-(move-text-default-bindings)
-
+** init_init.el
+  #+BEGIN_SRC emacs-lisp -n :tangle ~/.emacs.d/init.el 
 ;; Start emacs as a server when called from emacsclient
 (server-start)
 
-;; ;; PYTHON CONFIGURATION
-;; ;; --------------------------------------
+(setq inhibit-startup-message t)
 
-(elpy-enable)
-(elpy-use-ipython)
+(require 'package)
+;(setq package-enable-at-startup nil)
+(setq package-archives
+	     '(
+             ("melpa" . "https://melpa.org/packages/")
+             ;("elpa" . "http://tromey.com/elpa/")
+             ("gnu" . "http://elpa.gnu.org/packages/")
+             ;("marmalade" . "http://marmalade-repo.org/packages/")
+             ("org" . "http://orgmode.org/elpa/")
+             ;("melpa-stable" . "https://stable.melpa.org/packages/")
+             ))
+(package-initialize)
 
-;; ;; use flycheck not flymake with elpy
-(when (require 'flycheck nil t)
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  (add-hook 'elpy-mode-hook 'flycheck-mode))
+;; Bootstrap `use-package'
+;(unless (package-installed-p 'use-package)
+;	(package-refresh-contents)
+;	(package-install 'use-package))
+;
+;(use-package which-key
+;	:ensure t 
+;	:config
+;	(which-key-mode))
 
-;; enable autopep8 formatting on save
-(require 'py-autopep8)
-(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+(load "~/.emacs.d/init_main.el")
+(load "~/.emacs.d/init_org.el")
+(load "~/.emacs.d/init_py.el")
+(load "~/.emacs.d/init_misc.el")
+(load "~/.emacs.d/init_erc.el")
+;(load "~/.emacs.d/init_haskell.el")
+(load "~/.emacs.d/init_ghc_mod.el")
 
+;; Move custom settings save location
+;(setq custom-file "~/.emacs.d/package-selected-packages.el")
+;(load custom-file)
+
+; Stops emacs from saving package selections to your init by redefining the 
+; responsible function to do nothing.
+(defun package--save-selected-packages (&rest opt) nil)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-ghc-show-info t)
- '(company-idle-delay 0)
- '(haskell-process-auto-import-loaded-modules t)
- '(haskell-process-log t)
- '(haskell-process-suggest-remove-import-lines t)
- '(haskell-process-type (quote stack-ghci))
- '(haskell-tags-on-save t)
+ '(package-selected-packages
+   (quote
+    (shm rainbow-mode rainbow-delimiters py-autopep8 powerline org-wc org-time-budgets org-ref org-pomodoro org-plus-contrib org-pdfview org-bullets org-beautify-theme org-ac multiple-cursors move-text mmm-mode material-theme magithub magit highlight-current-line haskell-mode flyspell-correct-popup flycheck elpy ein djvu diffview company-statistics company-quickhelp company-math company better-defaults auctex which-key use-package ac-math ac-ispell)))
+ ;'(company-ghc-show-info t)
+ ;'(company-idle-delay 0)
+ ;'(haskell-process-auto-import-loaded-modules t)
+ ;'(haskell-process-log t)
+ ;'(haskell-process-suggest-remove-import-lines t)
+ ;'(haskell-process-type (quote stack-ghci))
+ ;'(haskell-tags-on-save t)
  '(org-clock-out-when-done t)
  '(org-log-into-drawer t)
  '(org-use-speed-commands t)
@@ -572,147 +499,306 @@ Config {
  '(pdf-view-display-size (quote fit-width))
  '(pdf-view-use-imagemagick t))
 
-;; Org-mode customization
-;; ----------------------
 
-;; Install org-drill from downloaded git repository
-(add-to-list 'load-path "~/.emacs.d/pkgs/org-mode/contrib/lisp/")       
-(require 'org-drill)
 
-;; Turn on visual-line-mode for Org-mode only
-;; Also consider installing "adaptive-wrap" from elpa
-(add-hook 'org-mode-hook 'turn-on-visual-line-mode)
+ 
+ #+END_SRC
+** init_main.el
+ #+BEGIN_SRC emacs-lisp -n :tangle ~/.emacs.d/init_main.el 
+ ;; INSTALL PACKAGES
+ ;; --------------------------------------
 
-;; Make org-mode time clock persistent across sessions
-(setq org-clock-persist 'history)
-(org-clock-persistence-insinuate)
+ (package-initialize)
+ (unless package-archive-contents
+   (package-refresh-contents))
 
-;;add todo list states for org-mode
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "IN-PROGRESS(i)" "WAITING-ON(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
-(setq org-todo-keyword-faces
-      '(("IN-PROGRESS" . "yellow")
-        ("CANCELED" . "blue")))
+ (setq package-list
+   '(
+     ;;intero ;;switched to dante.
+     ;ac-ispell
+     ;ac-math
+     auctex
+     better-defaults
+     company
+     company-ghc
+     company-auctex
+     company-bibtex
+     company-dict
+     company-nixos-options
+     ;company-math
+     company-quickhelp
+     company-statistics
+     ;;dante
+     diffview
+     djvu
+     ;ein
+     elpy
+     ;flycheck
+     ;flyspell-correct-popup
+     ghc ;ghc-mod
+     haskell-mode
+     highlight-current-line
+     highlight-indentation
+     magit
+     magit-popup
+     ;magithub
+     material-theme
+     ;mmm-mode
+     move-text
+     multiple-cursors
+     org
+     ;org-ac
+     org-beautify-theme
+     org-bullets
+     org-pdfview
+     org-plus-contrib
+     org-pomodoro
+     org-ref
+     org-time-budgets
+     org-wc
+     pdf-tools
+     powerline
+     py-autopep8
+     pyvenv
+     rainbow-delimiters
+     rainbow-mode
+     ;shm
+     which-key
+     ))
 
-;; Org-mode link insertion keybinding
-(global-set-key (kbd "C-c l") 'org-store-link)
-(global-set-key (kbd "C-c a") 'org-agenda)
+ ; install the missing packages
+ (dolist (package package-list)
+   (unless (package-installed-p package)
+     (package-install package)))
 
-;; Disable org-mode priorities
-(setq org-enable-priority-commands nil)
+ ;;(add-hook 'haskell-mode-hook 'intero-mode)
+ ;;(add-hook 'haskell-mode-hook 'intero-mode)
+ ;;(add-hook 'haskell-mode-hook 'dante-mode)
+ ;;(add-hook 'haskell-mode-hook 'flycheck-mode)
 
+ ;; Make sure pdf-tools self-compiles
+ (pdf-tools-install)
+ ;; BASIC CUSTOMIZATION
+ ;; --------------------------------------
+
+ ;; Prevent accidental tab indentation
+ (setq-default indent-tabs-mode nil)
+ (setq inhibit-startup-message t) ;; hide the startup message
+ (load-theme 'material t) ;; load material theme
+ ;; enable line numbers in program major modes, global linum breaks PDFtools
+ (add-hook 'prog-mode-hook 'linum-mode)
+
+ ;; enable rainbow delimiters in program major modes
+ (add-hook 'prog-mode-hook 'rainbow-delimiters-mode-enable)
+
+ ;; setup files ending in “.pdf” to open in pdf-tools
+ (add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
+
+ ;; Enable autosaved sessions
+ (desktop-save-mode 1)
+
+ ;; Enable move-text default keybindings
+ (move-text-default-bindings)
+
+ #+END_SRC
+** init_py.el
+ #+BEGIN_SRC emacs-lisp -n :tangle ~/.emacs.d/init_py.el 
+ ;; ;; PYTHON CONFIGURATION
+ ;; ;; --------------------------------------
+
+ (elpy-enable)
+ (elpy-use-ipython)
+
+ ;; ;; use flycheck not flymake with elpy
+ (when (require 'flycheck nil t)
+   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+   (add-hook 'elpy-mode-hook 'flycheck-mode))
+
+ ;; enable autopep8 formatting on save
+ (require 'py-autopep8)
+ (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+
+ #+END_SRC
+** init_org.el
+ #+BEGIN_SRC emacs-lisp -n :tangle ~/.emacs.d/init_org.el 
+ ;; Org-mode customization
+ ;; ----------------------
+
+ ;; Install org-drill from downloaded git repository
+ (add-to-list 'load-path "~/.emacs.d/pkgs/org-mode/contrib/lisp/")       
+ (require 'org-drill)
+
+ ;; Turn on visual-line-mode for Org-mode only
+ ;; Also consider installing "adaptive-wrap" from elpa
+ (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
+
+ ;; Make org-mode time clock persistent across sessions
+ (setq org-clock-persist 'history)
+ (org-clock-persistence-insinuate)
+
+ ;;add todo list states for org-mode
+ (setq org-todo-keywords
+       '((sequence "TODO(t)" "IN-PROGRESS(i)" "WAITING-ON(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
+ (setq org-todo-keyword-faces
+       '(("IN-PROGRESS" . "yellow")
+         ("CANCELED" . "blue")))
+
+ ;; Org-mode link insertion keybinding
+ (global-set-key (kbd "C-c l") 'org-store-link)
+ (global-set-key (kbd "C-c a") 'org-agenda)
+
+ ;; Disable org-mode priorities
+ (setq org-enable-priority-commands nil)
+ #+END_SRC
+** init_haskell.el
+ #+BEGIN_SRC emacs-lisp -n :tangle ~/.emacs.d/init_haskell.el 
+ ; Make Emacs look in Cabal directory for binaries
+; (let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
+;   (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
+;   (add-to-list 'exec-path my-cabal-path))
+
+
+ 
+  #+END_SRC
+** init_ghc_mod.el
+#+BEGIN_SRC emacs-lisp -n :tangle ~/.emacs.d/init_ghc_mod.el 
 ; Make Emacs look in Cabal directory for binaries
 (let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
-  (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
-  (add-to-list 'exec-path my-cabal-path))
+   (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
+   (add-to-list 'exec-path my-cabal-path))
 
-; HASKELL-MODE
-; ------------
-
-; Choose indentation mode
-;; Use haskell-mode indentation
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-;; Use hi2
-;(require 'hi2)
-;(add-hook 'haskell-mode-hook 'turn-on-hi2)
-;; Use structured-haskell-mode
-;;(add-hook 'haskell-mode-hook 'structured-haskell-mode)
-
-; Add F8 key combination for going to imports block
-(eval-after-load 'haskell-mode
-  '(define-key haskell-mode-map [f8] 'haskell-navigate-imports))
-
-; Add key combinations for interactive haskell-mode
-(eval-after-load 'haskell-mode '(progn
-  (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
-  (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
-  (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
-  (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
-  (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
-  (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)))
-(eval-after-load 'haskell-cabal '(progn
-  (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
-  (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
-  (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
-  (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)))
-
-(eval-after-load 'haskell-mode
-  '(define-key haskell-mode-map (kbd "C-c C-o") 'haskell-compile))
-(eval-after-load 'haskell-cabal
-  '(define-key haskell-cabal-mode-map (kbd "C-c C-o") 'haskell-compile))
-
-(setq haskell-process-type 'stack-ghci)
-;;(setq inferior-haskell-find-project-root nil)
-
-;; GHC-MOD
-;; -------
-
-;;(autoload 'ghc-init "ghc" nil t)
-;;(autoload 'ghc-debug "ghc" nil t)
-;;(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+(add-hook 'haskell-mode-hook (lambda () (ghc-init) (flymake-mode)))
 
 ;; COMPANY-GHC
 ;; -----------
 
-; Enable company-mode
-(require 'company)
-; Use company in Haskell buffers
-; (add-hook 'haskell-mode-hook 'company-mode)
-; Use company in all buffers
-(add-hook 'after-init-hook 'global-company-mode)
+ ; Enable company-mode
+ (require 'company)
+ ; Use company in Haskell buffers
+  (add-hook 'haskell-mode-hook 'company-mode)
+ ; Use company in all buffers
+ (add-hook 'after-init-hook 'global-company-mode)
 
-(add-to-list 'company-backends 'company-ghc)
+ (add-to-list 'company-backends 'company-ghc)
 
-;; Convenience Functions:
+ ; HASKELL-MODE
+ ; ------------
 
-(defun google (string)
-  "Run a Google search in a browser."
-  (interactive "sSearch for: ")
-  (browse-url (concat "http://www.google.com/search?q=" string)))
+ ; Choose indentation mode
+ ;; Use haskell-mode indentation
+ (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+ ;; Use hi2
+ ;(require 'hi2)
+ ;(add-hook 'haskell-mode-hook 'turn-on-hi2)
+ ;; Use structured-haskell-mode
+ ;;(add-hook 'haskell-mode-hook 'structured-haskell-mode)
 
-(defun google-region (from to &optional quoted)
-  "Run a Google search on the contents of the region FROM/TO"
-  (interactive "r\nP")
-  ;; (message "google-region %d %d %s" from to quoted)
-  (let ((str (buffer-substring from to)))
-    (google (if quoted (concat "\"" str "\"") str))
-    ))
-(global-set-key (kbd "C-c g") 'google-region)
+ ; Add F8 key combination for going to imports block
+ (eval-after-load 'haskell-mode
+   '(define-key haskell-mode-map [f8] 'haskell-navigate-imports))
 
+ ; Add key combinations for interactive haskell-mode
+ (eval-after-load 'haskell-mode '(progn
+   (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
+   (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+   (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
+   (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
+   (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
+   (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)))
+ (eval-after-load 'haskell-cabal '(progn
+   (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+   (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
+   (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
+   (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)))
 
-;; ERC Customization
-;; -----------------
-(setq erc-autojoin-channels-alist
-    '(("freenode.net" "#haskell-blah" "#haskell-in-depth" "#ghc" "#haskell")
-     (".*\\.freenode\\.net" "#haskell" "#ghc" "#haskell-in-depth" "#haskell-blah")))
-(setq erc-away-nickname nil)
-(setq erc-fill-column 100)
-(setq erc-fill-mode nil)
-(setq erc-nick "tput")
-(setq erc-nick-uniquifier "-")
-(setq erc-prompt-for-password t)
-(setq erc-user-full-name "Tim Put")
-(setq erc-whowas-on-nosuchnick t)
+ (eval-after-load 'haskell-mode
+   '(define-key haskell-mode-map (kbd "C-c C-o") 'haskell-compile))
+ (eval-after-load 'haskell-cabal
+   '(define-key haskell-cabal-mode-map (kbd "C-c C-o") 'haskell-compile))
 
-;; Suppress join-part messages.
-(setq erc-hide-list '("JOIN" "PART" "QUIT"))
+ (setq haskell-process-type 'stack-ghci)
+ ;;(setq inferior-haskell-find-project-root nil)
 
-;; Set buffer names to match the channel (plays nice with WM)
-(setq erc-rename-buffers t)
-;; The following are commented out by default, but users of other
-;; non-Emacs IRC clients might find them useful.
-;; Kill buffers for channels after /part
-(setq erc-kill-buffer-on-part t)
-;; Kill buffers for private queries after quitting the server
-(setq erc-kill-queries-on-quit t)
-;; Kill buffers for server messages after quitting the server
-(setq erc-kill-server-buffer-on-quit t)
-
-
- 
 #+END_SRC
+
+** init_misc.el
+ #+BEGIN_SRC emacs-lisp -n :tangle ~/.emacs.d/init_misc.el 
+ ;; Convenience Functions:
+
+ (defun google (string)
+   "Run a Google search in a browser."
+   (interactive "sSearch for: ")
+   (browse-url (concat "http://www.google.com/search?q=" string)))
+
+ (defun google-region (from to &optional quoted)
+   "Run a Google search on the contents of the region FROM/TO"
+   (interactive "r\nP")
+   ;; (message "google-region %d %d %s" from to quoted)
+   (let ((str (buffer-substring from to)))
+     (google (if quoted (concat "\"" str "\"") str))
+     ))
+ (global-set-key (kbd "C-c g") 'google-region)
+
+ #+END_SRC
+** init_erc.el
+ #+BEGIN_SRC emacs-lisp -n :tangle ~/.emacs.d/init_erc.el 
+ ;; ERC Customization
+ ;; -----------------
+ (setq erc-autojoin-channels-alist
+     '(("freenode.net" "#haskell-blah" "#haskell-in-depth" "#ghc" "#haskell")
+      (".*\\.freenode\\.net" "#haskell" "#ghc" "#haskell-in-depth" "#haskell-blah")))
+ (setq erc-away-nickname nil)
+ (setq erc-fill-column 100)
+ (setq erc-fill-mode nil)
+ (setq erc-nick "tput")
+ (setq erc-nick-uniquifier "-")
+ (setq erc-prompt-for-password t)
+ (setq erc-user-full-name "Tim Put")
+ (setq erc-whowas-on-nosuchnick t)
+
+ ;; Suppress join-part messages.
+ (setq erc-hide-list '("JOIN" "PART" "QUIT"))
+
+ ;; Set buffer names to match the channel (plays nice with WM)
+ (setq erc-rename-buffers t)
+ ;; The following are commented out by default, but users of other
+ ;; non-Emacs IRC clients might find them useful.
+ ;; Kill buffers for channels after /part
+ (setq erc-kill-buffer-on-part t)
+ ;; Kill buffers for private queries after quitting the server
+ (setq erc-kill-queries-on-quit t)
+ ;; Kill buffers for server messages after quitting the server
+ (setq erc-kill-server-buffer-on-quit t)
+ #+END_SRC
 * X dotfiles
+#+BEGIN_SRC 
+#!/bin/bash
+
+# Load resources
+
+xrdb -merge .Xresources
+
+emacs --daemon &
+# stalonetray &
+xscreensaver -no-splash &
+setxkbmap us &
+setxkbmap -option ctrl:nocaps &
+# feh --bg-scale /path/to/bg.png
+
+# add Cabal's bin directory to the executable search PATH if it exists
+if [ -d "$HOME/.cabal/bin" ] ; then
+    PATH="$HOME/.cabal/bin:$PATH"
+fi
+
+# add Stack's bin directory to the executable search PATH if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+exec xmonad
+#+END_SRC
 .xprofile
+
 #+BEGIN_SRC bash -n :tangle ~/.xprofile
 #!/bin/bash
 

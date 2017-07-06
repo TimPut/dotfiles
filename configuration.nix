@@ -73,6 +73,13 @@
     };
     windowManager.default = "xmonad";
   };
+
+  environment.systemPackages = with pkgs; [
+    chromium
+    fish
+    haskellPackages.xmobar
+  ];
+  
   # Enable the KDE Desktop Environment.
   services.xserver.displayManager.sddm.enable = true;
   # services.xserver.desktopManager.plasma5.enable = true;

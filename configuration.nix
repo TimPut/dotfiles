@@ -77,6 +77,7 @@
   environment.systemPackages = with pkgs; [
     chromium
     fish
+    dmenu
     haskellPackages.xmobar
   ];
   

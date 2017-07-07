@@ -44,10 +44,10 @@ import qualified Data.Map        as M
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 
-myTerminal = "/usr/bin/urxvt"
+myTerminal = "urxvt"
 
 -- The command to lock the screen or show the screensaver.
-myScreensaver = "/usr/bin/xscreensaver-command -lock"
+myScreensaver = "xscreensaver-command -lock"
 
 -- The command to take a selective screenshot, where you select
 -- what you'd like to capture on the screen.
@@ -55,7 +55,6 @@ myScreensaver = "/usr/bin/xscreensaver-command -lock"
 
 -- The command to use as a launcher, to launch commands that don't have
 -- preset keybindings.
-run_yeganesh = "yeganesh -x -- -fn '-*-terminus-*-r-normal-*-*-120-*-*-*-*-iso8859-*' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC'"
 run_dmenu = "dmenu_run -fn 'xft:Hack:size=12:antialias=true' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC'"
 
 ------------------------------------------------------------------------
@@ -83,7 +82,6 @@ myManageHook = composeAll
     [ 
     className =? "Darktable"      --> doFloat
     , className =? "VLC"            --> doFloat
-    , className =? "stalonetray"    --> doIgnore
     , isFullscreen                  --> doFullFloat --doF W.focusDown <+> doFullFloat)
     ]
 
@@ -197,11 +195,14 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
      spawn "amixer -q set Master 2%+")
 
   -- Adjust backlight with mod + F5/F6, I'm using light-git on Arch from the AUR.
-  , ((modMask, xK_F5), spawn "light -U 5")
-  , ((modMask, xK_F6), spawn "light -A 5")
+  --, ((modMask, xK_F5), spawn "light -U 5")
+  --, ((modMask, xK_F6), spawn "light -A 5")
+
+  , ((modMask, xK_F5), spawn "xbacklight -inc 5")
+  , ((modMask, xK_F6), spawn "xbacklight -dec 5")
 
   -- Launch emacsclient with C-e, run "emacs --daemon" on startup or add "(start server)" to your init.el 
-  , ((modMask, xK_e), spawn "emacsclient -c -a emacs")
+  , ((modMask, xK_e), spawn "emacsclient -c")
 
   
   -- Adjust height of window with mod + a/z, complements the default mod + h/l behaviour. 
@@ -346,7 +347,7 @@ main = do
           , ppSep = "   "
       }
       , manageHook = manageDocks <+> myManageHook
-      , startupHook = setWMName "Xmonad"
+      , startupHook = setWMName LG3D"
   }
 
 
@@ -631,6 +632,11 @@ insync start &
 
  ;; Enable move-text default keybindings
  (move-text-default-bindings)
+
+
+(menu-bar-mode -1) 
+(toggle-scroll-bar -1) 
+(tool-bar-mode -1) 
 
  #+END_SRC
 ** init_py.el

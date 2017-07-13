@@ -977,7 +977,7 @@ feh  --bg-scale '~/Downloads/MEMES/pepebg.png'
 
 #+END_SRC
 * NIXOS
-#+BEGIN_SRC -n tangle: /etc/nixos/configuration.nix 
+#+BEGIN_SRC sh tangle: /etc/nixos/configuration.nix 
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
@@ -1007,7 +1007,7 @@ feh  --bg-scale '~/Downloads/MEMES/pepebg.png'
   i18n = {
     consoleFont = "Lat2-Terminus16";
     consoleKeyMap = "us";
-    defaultLocale = "en_US.UTF-8";
+    defaultLocale = "en_CA.utf8";
   };
 
   # Set your time zone.

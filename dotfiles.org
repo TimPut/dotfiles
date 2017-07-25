@@ -442,7 +442,7 @@ setxkbmap -option "ctrl:nocaps" &
 setxkbmap -option "ctrl:ralt_rctrl" &
 
 # Start a window compositor. This ensures Google Chrome paints correctly.
-xcompmgr -n &
+compton -n &
 
 # Start sound server
 # pulseaudio --start --log-target=syslog &
